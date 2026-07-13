@@ -1,0 +1,18 @@
+# Model checkpoint — 382MB, hosted on Hugging Face Hub, never in git
+model/*.pt
+*.pt
+
+# Streamlit secrets (never commit tokens)
+.streamlit/secrets.toml
+
+# Python
+__pycache__/
+*.pyc
+.venv/
+venv/
+.env
+
+# OS noise
+.DS_Store
+Thumbs.db
+desktop.ini

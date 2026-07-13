@@ -1,0 +1,7 @@
+# CPU-only deps — works on Streamlit Community Cloud and any laptop.
+streamlit>=1.36
+tokenizers>=0.15
+huggingface_hub>=0.23
+# Torch CPU build. On Streamlit Cloud the default PyPI wheel is CPU and fine.
+torch>=2.2
+numpy
