@@ -30,6 +30,7 @@ from model_modern import ModernGPT, ModernGPTConfig
 HERE = os.path.dirname(os.path.abspath(__file__))
 DEFAULT_TOKENIZER = os.path.join(HERE, "tokenizer", "tokenizer.json")
 DEFAULT_LOCAL_CKPT = os.path.join(HERE, "model", "best_pashto_sft.pt")
+DEFAULT_HF_REPO = "iaamshayan/pashto-slm-chat"   # public; downloaded on first run
 DEFAULT_HF_FILENAME = "best_pashto_sft.pt"
 
 
@@ -53,19 +54,14 @@ def resolve_checkpoint() -> str:
     if os.path.exists(DEFAULT_LOCAL_CKPT):
         return DEFAULT_LOCAL_CKPT
 
-    repo_id = _secret("HF_REPO_ID")
-    if repo_id:
-        from huggingface_hub import hf_hub_download
+    # Default to the public HF Hub repo so a fresh deploy needs zero config;
+    # override with HF_REPO_ID (e.g. a private mirror) if desired.
+    repo_id = _secret("HF_REPO_ID", DEFAULT_HF_REPO)
+    from huggingface_hub import hf_hub_download
 
-        filename = _secret("HF_FILENAME", DEFAULT_HF_FILENAME)
-        token = _secret("HF_TOKEN")  # only needed for private repos
-        return hf_hub_download(repo_id=repo_id, filename=filename, token=token)
-
-    raise FileNotFoundError(
-        "No model checkpoint found. Set MODEL_PATH to a local .pt, place it at "
-        f"{DEFAULT_LOCAL_CKPT}, or set HF_REPO_ID (and HF_FILENAME) so it can be "
-        "downloaded from the Hugging Face Hub."
-    )
+    filename = _secret("HF_FILENAME", DEFAULT_HF_FILENAME)
+    token = _secret("HF_TOKEN")  # only needed for private repos
+    return hf_hub_download(repo_id=repo_id, filename=filename, token=token)
 
 
 class PashtoChatModel:

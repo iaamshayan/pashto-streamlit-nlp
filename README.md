@@ -18,15 +18,14 @@ git clone https://github.com/iaamshayan/pashto-streamlit-nlp.git
 cd pashto-streamlit-nlp
 pip install -r requirements.txt
 
-# Point the app at the checkpoint (any ONE of these):
-#   a) drop it here:            ./model/best_pashto_sft.pt
-#   b) or set a path:           export MODEL_PATH=/full/path/best_pashto_sft.pt
-#   c) or pull from HF Hub:     export HF_REPO_ID=<user>/pashto-slm-chat
-
 streamlit run app.py
 ```
 
-The app opens at http://localhost:8501.
+The app opens at http://localhost:8501. On first run it downloads the 382 MB
+checkpoint from the Hugging Face Hub
+([`iaamshayan/pashto-slm-chat`](https://huggingface.co/iaamshayan/pashto-slm-chat))
+and caches it. To use a local file instead, drop it at `./model/best_pashto_sft.pt`
+or set `export MODEL_PATH=/full/path/best_pashto_sft.pt`.
 
 ---
 
@@ -35,30 +34,25 @@ The app opens at http://localhost:8501.
 1. Push this repo to GitHub (already done if you cloned it).
 2. Go to **[share.streamlit.io](https://share.streamlit.io)** → **New app**.
 3. Repo `iaamshayan/pashto-streamlit-nlp`, branch `main`, main file `app.py`.
-4. In **Advanced settings → Secrets**, add the model location:
+4. **Deploy.** No secrets needed — the app already points at the public model
+   repo [`iaamshayan/pashto-slm-chat`](https://huggingface.co/iaamshayan/pashto-slm-chat)
+   and downloads the checkpoint on first run.
 
-   ```toml
-   HF_REPO_ID = "iaamshayan/pashto-slm-chat"
-   # HF_FILENAME = "best_pashto_sft.pt"   # default
-   # HF_TOKEN = "hf_..."                   # only if the repo is private
-   ```
-
-5. Deploy → you get a public `https://<app>.streamlit.app` URL to share.
+You get a public `https://<app>.streamlit.app` URL to share.
 
 The 382 MB checkpoint is **not** committed to git (it exceeds GitHub's file
 limit); it is downloaded from the Hugging Face Hub on first run and cached.
 
-### Hosting the checkpoint on the Hugging Face Hub (one time)
+### Overriding the model source (optional)
 
-```bash
-pip install huggingface_hub
-huggingface-cli login
-huggingface-cli repo create pashto-slm-chat --type model
-huggingface-cli upload iaamshayan/pashto-slm-chat \
-    "path/to/best_pashto_sft.pt" best_pashto_sft.pt
+Point at a different / private checkpoint via **Advanced settings → Secrets**
+(or local env vars):
+
+```toml
+HF_REPO_ID  = "your-user/your-model"   # default: iaamshayan/pashto-slm-chat
+HF_FILENAME = "best_pashto_sft.pt"     # default
+HF_TOKEN    = "hf_..."                 # only if the repo is private
 ```
-
-Then set `HF_REPO_ID = "iaamshayan/pashto-slm-chat"` as above.
 
 ---
 
